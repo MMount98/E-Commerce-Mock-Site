@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
   // be sure to include its associated Product data
   try {
     const tagData = await Tag.findAll({
-      include: [{ model: Product }],
+      include: [{ model: Product, through: ProductTag }],
     });
     //checks to see if category exist
     res.status(200).json(tagData);
@@ -37,8 +37,17 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
-  // create a new tag
+router.post("/", async (req, res) => {
+  try {
+    const tagData = await Tag.create({
+      tag_name: req.body.tag_name,
+    });
+    //responds with new category
+    res.status(200).json(tagData);
+  } catch (err) {
+    //responds with server err
+    res.status(400).json(err);
+  }
 });
 
 router.put("/:id", (req, res) => {
